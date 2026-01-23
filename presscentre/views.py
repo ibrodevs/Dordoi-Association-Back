@@ -26,17 +26,9 @@ class LocalizationMixin:
 
 
 class PublicationViewSet(LocalizationMixin, ReadOnlyModelViewSet):
-
-    queryset = Publication.objects.all().order_by("-created_at")
+    queryset = Publication.objects.all()
     serializer_class = PublicationSerializer
-    filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = [
-        "title_en",
-        "title_ru",
-        "title_kg",
-        "link",
-    ]
-    ordering_fields = ["created_at", "title_ru"]
+    
 
 
 class CategoryViewSet(LocalizationMixin, ReadOnlyModelViewSet):

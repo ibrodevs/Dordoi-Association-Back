@@ -21,6 +21,7 @@ class LocalizationSerializerMixin:
 
 class PublicationSerializer(LocalizationSerializerMixin, serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
 
     class Meta:
         model = Publication
@@ -28,11 +29,13 @@ class PublicationSerializer(LocalizationSerializerMixin, serializers.ModelSerial
             "id",
             "title",
             "link",
-            "created_at",
-            "updated_at",
+            'description',
+            'photo',
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
 
+    def get_description(self, obj):
+        return obj.get_description(language=self._get_language())
+    
     def get_title(self, obj):
         return obj.get_title(language=self._get_language())
 

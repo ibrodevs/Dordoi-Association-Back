@@ -3,6 +3,32 @@
 from django.db import migrations, models
 
 
+def add_cropping_column(apps, schema_editor):
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news ADD COLUMN IF NOT EXISTS cropping VARCHAR(255) NULL;"
+        )
+    elif vendor == "sqlite":
+        return
+    else:
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news ADD COLUMN cropping VARCHAR(255);"
+        )
+
+
+def remove_cropping_column(apps, schema_editor):
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news DROP COLUMN IF EXISTS cropping;"
+        )
+    elif vendor == "sqlite":
+        return
+    else:
+        schema_editor.execute("ALTER TABLE presscentre_news DROP COLUMN cropping;")
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,8 +36,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            sql="ALTER TABLE presscentre_news ADD COLUMN IF NOT EXISTS cropping VARCHAR(255) NULL;",
-            reverse_sql="ALTER TABLE presscentre_news DROP COLUMN IF EXISTS cropping;",
-        ),
+        migrations.RunPython(add_cropping_column, remove_cropping_column),
     ]

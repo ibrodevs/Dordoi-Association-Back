@@ -3,6 +3,32 @@
 from django.db import migrations
 
 
+def drop_aspect_ratio_column(apps, schema_editor):
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news DROP COLUMN IF EXISTS aspect_ratio;"
+        )
+    elif vendor == "sqlite":
+        return
+    else:
+        schema_editor.execute("ALTER TABLE presscentre_news DROP COLUMN aspect_ratio;")
+
+
+def restore_aspect_ratio_column(apps, schema_editor):
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news ADD COLUMN IF NOT EXISTS aspect_ratio VARCHAR(20) DEFAULT 'landscape' NOT NULL;"
+        )
+    elif vendor == "sqlite":
+        return
+    else:
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news ADD COLUMN aspect_ratio VARCHAR(20) DEFAULT 'landscape';"
+        )
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,8 +36,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            sql="ALTER TABLE presscentre_news DROP COLUMN IF EXISTS aspect_ratio;",
-            reverse_sql="ALTER TABLE presscentre_news ADD COLUMN IF NOT EXISTS aspect_ratio VARCHAR(20) DEFAULT 'landscape' NOT NULL;",
-        ),
+        migrations.RunPython(drop_aspect_ratio_column, restore_aspect_ratio_column),
     ]

@@ -221,12 +221,18 @@ class Publication(models.Model):
 
     link = models.URLField(max_length=500, verbose_name="Ссылка", blank=True, null=True)
 
+    photo = models.ImageField(upload_to="publications/", verbose_name="Фото", blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
+    description_en = models.TextField(blank=True, verbose_name="Короткое описание (EN)")
+    description_ru = models.TextField(blank=True, verbose_name="Короткое описание (RU)")
+    description_kg = models.TextField(blank=True, verbose_name="Короткое описание (KG)")
+
     class Meta:
-        verbose_name = "Публикация"
-        verbose_name_plural = "Публикации"
+        verbose_name = "СМИ о нас"
+        verbose_name_plural = "СМИ о нас"
         ordering = ["-created_at"]
 
     def __str__(self):
@@ -241,4 +247,7 @@ class Publication(models.Model):
             return self.title_ru.strip()
         if language != "en" and self.title_en and self.title_en.strip():
             return self.title_en.strip()
-        return f"Publication #{self.pk}" if self.pk else "New Publication"
+        return f"СМИ о нас #{self.pk}" if self.pk else "Новое СМИ о нас"
+    
+    def get_description(self, language='ru'):
+        return getattr(self, f'description_{language}', self.description_en)

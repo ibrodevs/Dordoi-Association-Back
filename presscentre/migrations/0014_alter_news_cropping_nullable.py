@@ -3,6 +3,34 @@
 from django.db import migrations, models
 
 
+def make_cropping_nullable(apps, schema_editor):
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news ALTER COLUMN cropping DROP NOT NULL;"
+        )
+    elif vendor == "sqlite":
+        return
+    else:
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news ALTER COLUMN cropping DROP NOT NULL;"
+        )
+
+
+def restore_cropping_not_null(apps, schema_editor):
+    vendor = schema_editor.connection.vendor
+    if vendor == "postgresql":
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news ALTER COLUMN cropping SET NOT NULL;"
+        )
+    elif vendor == "sqlite":
+        return
+    else:
+        schema_editor.execute(
+            "ALTER TABLE presscentre_news ALTER COLUMN cropping SET NOT NULL;"
+        )
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,8 +38,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            sql="ALTER TABLE presscentre_news ALTER COLUMN cropping DROP NOT NULL;",
-            reverse_sql="ALTER TABLE presscentre_news ALTER COLUMN cropping SET NOT NULL;",
-        ),
+        migrations.RunPython(make_cropping_nullable, restore_cropping_not_null),
     ]
