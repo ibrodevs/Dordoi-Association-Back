@@ -3,6 +3,30 @@
 from django.db import migrations, models
 
 
+def add_cropping_column_if_missing(apps, schema_editor):
+    News = apps.get_model('presscentre', 'News')
+    table = News._meta.db_table
+    column_name = 'cropping'
+
+    with schema_editor.connection.cursor() as cursor:
+        existing_columns = {
+            column.name for column in schema_editor.connection.introspection.get_table_description(cursor, table)
+        }
+
+    if column_name in existing_columns:
+        return
+
+    field = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name='Обрезка изображения',
+        help_text='Координаты обрезки изображения (JSON формат)',
+    )
+    field.set_attributes_from_name(column_name)
+    schema_editor.add_field(News, field)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -14,10 +38,23 @@ class Migration(migrations.Migration):
             name='publication',
             options={'ordering': ['-created_at'], 'verbose_name': 'СМИ о нас', 'verbose_name_plural': 'СМИ о нас'},
         ),
-        migrations.AddField(
-            model_name='news',
-            name='cropping',
-            field=models.CharField(blank=True, help_text='Координаты обрезки изображения (JSON формат)', max_length=255, null=True, verbose_name='Обрезка изображения'),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunPython(add_cropping_column_if_missing, migrations.RunPython.noop),
+            ],
+            state_operations=[
+                migrations.AddField(
+                    model_name='news',
+                    name='cropping',
+                    field=models.CharField(
+                        blank=True,
+                        help_text='Координаты обрезки изображения (JSON формат)',
+                        max_length=255,
+                        null=True,
+                        verbose_name='Обрезка изображения',
+                    ),
+                ),
+            ],
         ),
         migrations.AddField(
             model_name='publication',
