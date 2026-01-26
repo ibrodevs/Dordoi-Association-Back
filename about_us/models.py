@@ -180,7 +180,10 @@ class Structure(models.Model):
         "Description (KG)", config_name="extends", null=True, blank=True
     )
 
-    address = models.CharField(max_length=500, verbose_name="Адрес", blank=True)
+    address_kg = models.CharField(max_length=500,  blank=True, verbose_name='address(kg)')
+    address_ru = models.CharField(max_length=500,  blank=True, verbose_name='address(ru)')
+    address_en = models.CharField(max_length=500, blank=True, verbose_name='address(en)')
+    
     email = models.EmailField(verbose_name="Email", blank=True)
     phone = models.CharField(max_length=50, verbose_name="Телефон", blank=True)
 
@@ -201,3 +204,6 @@ class Structure(models.Model):
     def get_description(self, language="ru"):
         field_name = f"description_{language}"
         return getattr(self, field_name, self.description_ru)
+
+    def get_address(self, language='ru'):
+        return getattr(self, f'address_{language}', address_ru)
