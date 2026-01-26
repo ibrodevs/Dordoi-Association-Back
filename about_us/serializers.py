@@ -122,5 +122,6 @@ class StructureSerializer(LocalizationSerializerMixin, serializers.ModelSerializ
         return obj.get_description(language=language)
 
     def get_address(self, obj):
-        return obj.get_address(language=self.get_language())
+        return obj.get_address(language=self.context.get("language")
+)
     
