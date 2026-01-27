@@ -96,6 +96,7 @@ class StructureSerializer(LocalizationSerializerMixin, serializers.ModelSerializ
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Structure
@@ -123,6 +124,8 @@ class StructureSerializer(LocalizationSerializerMixin, serializers.ModelSerializ
         return obj.get_description(language=language)
 
     def get_address(self, obj):
-        return obj.get_address(language=self.context.get("language")
-)
+        return obj.get_address(language=self.context.get("language"))
+    
+    def get_category(self, obj):
+        return obj.get_category(language=self.context.get('language'))
     

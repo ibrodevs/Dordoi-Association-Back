@@ -224,3 +224,8 @@ class Structure(models.Model):
 
     def get_address(self, language='ru'):
         return getattr(self, f'address_{language}', self.address_ru)
+
+    def get_category(self, language):
+        if not self.category:
+            return None
+        return self.category.get_name(language)
