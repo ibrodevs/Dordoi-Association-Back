@@ -13,13 +13,18 @@ class LanguageContextMixin:
 
 
 
-class PartnerListView(generics.ListAPIView, LanguageContextMixin):
+class PartnerListView(generics.ListAPIView):
     """
     View для получения списка всех партнеров
     Поддерживает параметр lang для выбора языка (ru, en, kg)
     """
     queryset = Partner.objects.all()
     serializer_class = PartnerSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["language"] = self.request.query_params.get("lang", "ru")
+        return context
 
     
 
