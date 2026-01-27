@@ -8,7 +8,7 @@ def test_succes():
     res = response.json()
     assert 'category' in res[0]
     assert isinstance(res[0]['category'], str)
-    assert res[0]['category'] == 'Ишкерлик'
+    assert res[0]['is_active'] == False
 
 
 

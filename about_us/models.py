@@ -163,6 +163,7 @@ class Structure(models.Model):
     """
     Структурные подразделения ассоциации
     """
+    is_active = models.BooleanField(default=False, verbose_name='Скрыть')
 
     slug = models.SlugField(max_length=255, unique=True, verbose_name="Slug (URL)")
 

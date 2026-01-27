@@ -104,6 +104,7 @@ class StructureSerializer(LocalizationSerializerMixin, serializers.ModelSerializ
             "id",
             "slug",
             "category",
+            "is_active",
             "logo",
             "name",
             "description",

@@ -112,16 +112,8 @@ class StructureViewSet(LocalizationMixin, ReadOnlyModelViewSet):
     Поиск по slug: /api/about-us/structure/dordoi-trade/
     """
 
-    queryset = Structure.objects.all().order_by("order")
+    queryset = Structure.objects.all().order_by("order").filter(is_active=False)
     serializer_class = StructureSerializer
     lookup_field = "slug"
-    filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = [
-        "name_en",
-        "name_ru",
-        "name_kg",
-        "description_en",
-        "description_ru",
-        "description_kg",
-    ]
-    ordering_fields = ["order", "name_ru"]
+   
+
