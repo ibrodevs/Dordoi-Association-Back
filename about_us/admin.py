@@ -1,6 +1,6 @@
 from unfold.admin import ModelAdmin
 from django.contrib import admin
-from .models import FactCard, Leader, History, Structure
+from .models import FactCard, Leader, History, Structure, CategoryStructure
 
 
 @admin.register(FactCard)
@@ -55,4 +55,8 @@ class HistoryAdmin(ModelAdmin):
 
 @admin.register(Structure)
 class StructureAdmin(ModelAdmin):
+    pass
+
+@admin.register(CategoryStructure)
+class CategoryStructureAdmin(ModelAdmin):
     pass

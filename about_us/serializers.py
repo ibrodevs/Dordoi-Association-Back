@@ -102,6 +102,7 @@ class StructureSerializer(LocalizationSerializerMixin, serializers.ModelSerializ
         fields = [
             "id",
             "slug",
+            "category",
             "logo",
             "name",
             "description",

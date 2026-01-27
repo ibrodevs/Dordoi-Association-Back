@@ -144,12 +144,29 @@ class History(models.Model):
         return getattr(self, f"description_{language}", self.description_ru)
 
 
+class CategoryStructure(models.Model):
+    name_kg = models.CharField(max_length=255, unique=True, verbose_name="название на кыргызском")
+    name_en = models.CharField(max_length=255, unique=True, verbose_name="название на английском")
+    name_ru = models.CharField(max_length=255, unique=True, verbose_name="название на русском")
+
+    class Meta:
+        verbose_name = 'категория для структур'
+        verbose_name_plural = 'категории для структур'
+
+    def __str__(self):
+        return self.name_ru
+
+    def get_name(self, language):
+        return getattr(self, f'name_{language}', self.name_ru)
+
 class Structure(models.Model):
     """
     Структурные подразделения ассоциации
     """
 
     slug = models.SlugField(max_length=255, unique=True, verbose_name="Slug (URL)")
+
+    category = models.ForeignKey(CategoryStructure, verbose_name='категория', null=True, blank=True, on_delete=models.SET_NULL)
 
     logo = models.ImageField(upload_to="subsidiaries/logos/", verbose_name="Логотип")
 
@@ -180,9 +197,9 @@ class Structure(models.Model):
         "Description (KG)", config_name="extends", null=True, blank=True
     )
 
-    address_kg = models.CharField(max_length=500,  blank=True, verbose_name='address(kg)')
-    address_ru = models.CharField(max_length=500,  blank=True, verbose_name='address(ru)')
-    address_en = models.CharField(max_length=500, blank=True, verbose_name='address(en)')
+    address_kg = models.CharField(max_length=500,  blank=True, verbose_name='адрес на кыргызском')
+    address_ru = models.CharField(max_length=500,  blank=True, verbose_name='адрес на русском ')
+    address_en = models.CharField(max_length=500, blank=True, verbose_name='адрес на английском')
 
     email = models.EmailField(verbose_name="Email", blank=True)
     phone = models.CharField(max_length=50, verbose_name="Телефон", blank=True)
