@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Partner, Category, Projects
+from .models import Partner,  Projects, ProjectGallery
 
 
 class LocalizationSerializerMixin:
@@ -41,26 +41,16 @@ class PartnerSerializer(serializers.ModelSerializer):
         return obj.get_description(self.context.get("language", "ru"))
 
 
-class CategorySerializer(LocalizationSerializerMixin, serializers.ModelSerializer):
-    title = serializers.SerializerMethodField()
-
+class PhotosProjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
-        fields = [
-            "id",
-            "title",
-        ]
-
-    def get_title(self, obj):
-        return obj.get_title(language=self._get_language())
-
-
+        model = ProjectGallery
+        fields = ['image']
 
 class ProjectsSerializer(LocalizationSerializerMixin, serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
     short_description = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
-    category = CategorySerializer(read_only=True)
+    photos = PhotosProjectSerializer(many=True)
 
     class Meta:
         model = Projects
@@ -69,12 +59,11 @@ class ProjectsSerializer(LocalizationSerializerMixin, serializers.ModelSerialize
             "title",
             "short_description",
             "description",
-            "category",
             "created_at",
             "updated_at",
             "published_at",
             "image",
-            "image",
+            "photos"
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 

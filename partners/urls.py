@@ -5,7 +5,6 @@ from . import views
 
 app_name = 'partners'
 router = DefaultRouter()
-router.register(r"categories", views.CategoryViewSet, basename="category")
 router.register(r"projects", views.ProjectsViewSet, basename="news")
 
 urlpatterns = [

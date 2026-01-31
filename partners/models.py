@@ -35,34 +35,7 @@ class Partner(models.Model):
 
 
 
-class Category(models.Model):
-
-    title_en = models.CharField(max_length=255, verbose_name="Название (EN)")
-    title_ru = models.CharField(max_length=255, verbose_name="Название (RU)")
-    title_kg = models.CharField(max_length=255, verbose_name="Название (KG)")
-
-    class Meta:
-        verbose_name = "Категория для проектов"
-        verbose_name_plural = "Категории для проектов"
-
-    def __str__(self):
-        return self.get_title()
-
-    def get_title(self, language="ru"):
-        return getattr(self, f'title_{language}', self.title_ru)
-
 class Projects(models.Model):
-
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="projects",
-        verbose_name="Категория",
-    )
-
-
     title_en = models.CharField(max_length=255, verbose_name="Заголовок (EN)")
     title_ru = models.CharField(max_length=255, verbose_name="Заголовок (RU)")
     title_kg = models.CharField(max_length=255, verbose_name="Заголовок (KG)")
@@ -171,6 +144,10 @@ class Projects(models.Model):
 
 
 
+class ProjectGallery(models.Model):
+    project = models.ForeignKey(Projects, verbose_name='проект', on_delete=models.CASCADE, related_name='photos')
+    image = models.ImageField(upload_to='partners/project-photos/')
 
-
-
+    class Meta:
+        verbose_name='галерея проекта'
+        verbose_name_plural='галереи проекта'

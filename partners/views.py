@@ -3,8 +3,8 @@ from rest_framework import generics
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Partner, Projects, Category
-from .serializers import PartnerSerializer, CategorySerializer, ProjectsSerializer
+from .models import Partner, Projects
+from .serializers import PartnerSerializer, ProjectsSerializer
 
 
 class LanguageContextMixin:
@@ -39,13 +39,6 @@ class PartnerDetailView(generics.RetrieveAPIView, LanguageContextMixin):
     queryset = Partner.objects.all()
     serializer_class = PartnerSerializer
     lookup_field = 'id'
-
-
-
-class CategoryViewSet(LanguageContextMixin, ReadOnlyModelViewSet):
-
-    queryset = Category.objects.all().order_by("title_ru")
-    serializer_class = CategorySerializer
 
 
 
