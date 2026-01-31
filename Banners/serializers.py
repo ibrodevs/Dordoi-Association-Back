@@ -6,8 +6,6 @@ class BannerSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
     idea = serializers.SerializerMethodField()
 
-
-
     class Meta:
         model = Banner
         fields = ['id', 'image', 'title', 'idea', 'link_url']

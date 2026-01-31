@@ -1,7 +1,10 @@
 # views.py
 from rest_framework import generics
-from .models import Partner
-from .serializers import PartnerSerializer
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from .models import Partner, Projects, Category
+from .serializers import PartnerSerializer, CategorySerializer, ProjectsSerializer
 
 
 class LanguageContextMixin:
@@ -36,3 +39,23 @@ class PartnerDetailView(generics.RetrieveAPIView, LanguageContextMixin):
     queryset = Partner.objects.all()
     serializer_class = PartnerSerializer
     lookup_field = 'id'
+
+
+
+class CategoryViewSet(LanguageContextMixin, ReadOnlyModelViewSet):
+
+    queryset = Category.objects.all().order_by("title_ru")
+    serializer_class = CategorySerializer
+
+
+
+class ProjectsViewSet(LanguageContextMixin, ReadOnlyModelViewSet):
+
+    queryset = Projects.objects.all().order_by("-created_at")
+    serializer_class = ProjectsSerializer
+
+    @action(detail=False, methods=['get'])
+    def banners(self, request):
+        banners = self.get_queryset().filter(is_banner=True)
+        serializer = self.get_serializer(banners, many=True)
+        return Response(serializer.data)
